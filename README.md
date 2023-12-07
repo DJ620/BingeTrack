@@ -1,5 +1,5 @@
-# MERN Stack Template
+# TV Tracker
 
 ## Description
 
-This is a basic outline for a MERN stack project. It can be used as the starting point for any MERN stack application.
+This is a an application that can be used to track TV shows by selecting what episodes you've watched, and what shows you want to watch but haven't.
