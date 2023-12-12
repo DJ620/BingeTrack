@@ -4,31 +4,62 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { LinkContainer } from "react-router-bootstrap";
 import token from "../utils/token";
+import { useLocation, useNavigate } from "react-router-dom";
+import api from "../utils/api";
+import { useDispatch } from "react-redux";
+import { addLibrary } from "../store/slices/showLibrary";
 
 const Header = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("");
 
   useEffect(() => {
     setUsername(token.getUsername());
-  }, []);
+    console.log("location changed")
+      api
+        .getShowLibrary(token.getId())
+        .then((res) => {
+          console.log('show library delivered');
+          console.log(res.data.showLibrary);
+          dispatch(addLibrary(res.data.showLibrary));
+        });
+  }, [location]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  }
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        <LinkContainer to="/">
-          <Navbar.Brand href="/">TV Tracker</Navbar.Brand>
+        <LinkContainer to="/library">
+          <Navbar.Brand>TV Tracker</Navbar.Brand>
         </LinkContainer>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <LinkContainer to="/">
+        <Navbar.Collapse id="basic-navbar-nav" className={username ? '' : 'justify-content-end'}>
+          {username ? (
+            <Nav className="me-auto">
+            <LinkContainer to="/library">
               <Nav.Link>Library</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/search">
               <Nav.Link>Search</Nav.Link>
             </LinkContainer>
+            <Nav.Link onClick={() => handleLogout()}>Logout</Nav.Link>
           </Nav>
-          <Navbar.Text>Welcome, {username}</Navbar.Text>
+          ) : null}
+          {username ? (
+            <Navbar.Text>Welcome, {username}</Navbar.Text>
+          ) : (
+            <Navbar.Text>
+              <LinkContainer to="/">
+              <Nav.Link>Login</Nav.Link>
+              </LinkContainer>
+              </Navbar.Text>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>

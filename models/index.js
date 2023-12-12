@@ -1,5 +1,5 @@
 module.exports = {
-    //import model folders here
-    //syntax: 
-    User: require("./user")
+    User: require("./user"),
+    ShowData: require("./show"),
+    EpisodeData: require("./episode")
 };

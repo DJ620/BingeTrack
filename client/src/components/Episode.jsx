@@ -4,56 +4,88 @@ import Button from "react-bootstrap/esm/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useSelector, useDispatch } from "react-redux";
-import { handleEpisodes } from "../store/slices/showLibrary";
+import { addLibrary } from "../store/slices/showLibrary";
+import api from "../utils/api";
+import token from "../utils/token";
 
-const Episode = ({ episode, showInfo }) => {
+const Episode = ({ episode, showInfo, showMongoId }) => {
   const showLibrary = useSelector((state) => state.showLibrary);
   const dispatch = useDispatch();
   const [watched, setWatched] = useState(false);
   const [showInLibrary, setShowInLibrary] = useState(false);
   const [watchedEpisodes, setWatchedEpisodes] = useState([]);
+  const [episodeMongoId, setEpisodeMongoId] = useState(null);
+  const [hasAired, setHasAired] = useState(false);
+  const [image, setImage] = useState("");
 
   useEffect(() => {
     if (showLibrary) {
       const isInLibrary = showLibrary.some((show) => {
-        return show.id === showInfo.id;
+        return show.showId === showInfo.id;
       });
       setShowInLibrary(isInLibrary);
-      setWatchedEpisodes(showLibrary.filter((show) => show.id === showInfo.id)[0]?.watchedEpisodes);
+      setWatchedEpisodes(
+        showLibrary.filter((show) => show.showId === showInfo.id)[0]
+          ?.watchedEpisodes
+      );
+      const epTime = episode.airdate + "T" + episode.airtime;
+    const now = new Date().toISOString();
+    setHasAired(now > epTime);
+    };
+    if (episode.image?.medium) {
+      setImage(episode.image.medium)
+    } else {
+      setImage('https://diwanegypt.com/wp-content/uploads/2020/12/Placeholder-1.png');
     }
   }, [showLibrary]);
 
   useEffect(() => {
     if (watchedEpisodes && watchedEpisodes.length > 0) {
       const isWatched = watchedEpisodes.some((showEpisode) => {
-        return showEpisode.id === episode.id;
+        return showEpisode.episodeId === episode.id;
       });
       setWatched(isWatched);
+      if (isWatched) {
+        let mongoEpisode;
+        mongoEpisode = watchedEpisodes.filter((ep) => {
+          return ep.episodeId === episode.id;
+        });
+        setEpisodeMongoId(mongoEpisode[0]._id);
+      }
     } else {
       setWatched(false);
-    };
+    }
   }, [watchedEpisodes]);
+
+  useEffect(() => {
+    console.log(episode?.image?.medium)
+  }, []);
 
   const handleWatchEpisode = () => {
     setWatched(!watched);
     let newEpisodeList = [];
     if (!watched) {
-      newEpisodeList = [...watchedEpisodes, { id: episode.id, season: episode.season, number: episode.number, name: episode.name }];
-    } else {
-      newEpisodeList = watchedEpisodes.filter((watchedEpisode) => {
-        return watchedEpisode.id !== episode.id;
-      })
-      console.log(newEpisodeList)
-    }
-      dispatch(
-        handleEpisodes({
-          id: showInfo.id,
-          name: showInfo.name,
-          image: showInfo?.image?.original,
-          watchedEpisodes: newEpisodeList
+      const episodeData = {
+        episodeId: episode.id,
+        season: episode.season,
+        number: episode.number,
+        name: episode.name,
+      };
+      api
+        .addEpisode({
+          episodeData,
+          showId: showMongoId,
+          userId: token.getId(),
         })
-      )
-      setWatchedEpisodes(newEpisodeList);
+        .then((res) => {
+          dispatch(addLibrary(res.data.showLibrary));
+        });
+    } else {
+      api.deleteEpisode(episodeMongoId, token.getId()).then((res) => {
+        dispatch(addLibrary(res.data.showLibrary));
+      });
+    }
+    setWatchedEpisodes(newEpisodeList);
   };
 
   return (
@@ -61,7 +93,7 @@ const Episode = ({ episode, showInfo }) => {
       <Card.Header className="h6">
         Season {episode.season}, Episode {episode.number}
       </Card.Header>
-      <Card.Img variant="top" src={episode?.image?.medium} />
+      <Card.Img variant="top" src={image} />
       <Card.Body>
         <Card.Title className="h4">{episode.name}</Card.Title>
         <Card.Text style={{ height: "100px", overflow: "scroll" }}>
@@ -72,17 +104,17 @@ const Episode = ({ episode, showInfo }) => {
         <Row>
           <Col xs={6} className="pe-0">
             <p style={{ fontSize: "14px" }} className="pt-2">
-              Air Date: {new Date(episode.airstamp).toLocaleDateString()}
+              Air Date: {new Date(episode.airdate).toLocaleDateString()}
             </p>
           </Col>
           <Col className="ps-0">
             <Button
-              className={`mt-1 ${showInLibrary ? "" : "disabled"}`}
-              variant={watched ? "outline-secondary" : "dark"}
+              className={`mt-1 ${!hasAired ? 'disabled' : showInLibrary ? "" : "disabled"}`}
+              variant={!hasAired ? 'dark' : watched ? "outline-secondary" : "dark"}
               size="sm"
               onClick={() => handleWatchEpisode()}
             >
-              {watched ? "Mark as Unwatched" : "Mark as Watched"}
+              {!hasAired ? "Upcoming" : watched ? "Mark as Unwatched" : "Mark as Watched"}
             </Button>
           </Col>
         </Row>

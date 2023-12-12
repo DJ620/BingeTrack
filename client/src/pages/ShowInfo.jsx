@@ -9,7 +9,9 @@ import Col from "react-bootstrap/esm/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/esm/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { addShow, deleteShow } from "../store/slices/showLibrary";
+import { addLibrary } from "../store/slices/showLibrary";
+import api from "../utils/api";
+import token from "../utils/token";
 
 const ShowInfo = () => {
   const dispatch = useDispatch();
@@ -20,6 +22,7 @@ const ShowInfo = () => {
   const [showEpisodes, setShowEpisodes] = useState(false);
   const [loading, setLoading] = useState(false);
   const [inLibrary, setInLibrary] = useState(false);
+  const [mongoId, setMongoId] = useState(null);
 
   useEffect(() => {
     getShowInfo();
@@ -27,10 +30,16 @@ const ShowInfo = () => {
 
   useEffect(() => {
     const isInLibrary = showLibrary.some((show) => {
-      return show.id === showInfo.id;
+      return show.showId === showInfo.id;
     });
     setInLibrary(isInLibrary);
   }, [showLibrary, showInfo]);
+
+  useEffect(() => {
+    if (inLibrary) {
+      setMongoId(showLibrary.find(({ showId }) => showId === showInfo.id)?._id);
+    }
+  }, [inLibrary]);
 
   const getShowInfo = async () => {
     setLoading(true);
@@ -40,13 +49,13 @@ const ShowInfo = () => {
         url: `https://api.tvmaze.com/shows/${showId}?embed=episodes`,
       };
       const response = await axios.request(options);
-      console.log(response.data);
       setShowInfo(response.data);
+      console.log('show info here')
+      console.log(response.data);
       const seasons = Object.groupBy(
         response.data._embedded.episodes,
         ({ season }) => season
       );
-      console.log(seasons);
       setShowSeasons(seasons);
       setShowEpisodes(!showEpisodes);
       setLoading(false);
@@ -58,15 +67,19 @@ const ShowInfo = () => {
   const handleShowLibrary = () => {
     setInLibrary(!inLibrary);
     if (!inLibrary) {
-      dispatch(
-        addShow({
-          id: showInfo.id,
-          name: showInfo.name,
-          image: showInfo?.image?.original
-        })
-      );
+      const showData = {
+        showId: showInfo.id,
+        name: showInfo.name,
+        image: showInfo?.image?.original,
+        numOfEpisodes: showInfo._embedded.episodes.length
+      };
+      api.addShow({ showData, userId: token.getId() }).then((res) => {
+        dispatch(addLibrary(res.data.showLibrary));
+      });
     } else {
-      dispatch(deleteShow(showInfo.id));
+      api.deleteShow(mongoId, token.getId()).then((res) => {
+        dispatch(addLibrary(res.data.showLibrary));
+      });
     }
   };
 
@@ -116,6 +129,7 @@ const ShowInfo = () => {
                     season={showSeasons[season]}
                     seasonNumber={season}
                     showInfo={showInfo}
+                    showMongoId={mongoId}
                   />
                 </div>
               );
