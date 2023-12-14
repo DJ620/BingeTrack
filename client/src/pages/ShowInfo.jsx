@@ -23,6 +23,8 @@ const ShowInfo = () => {
   const [loading, setLoading] = useState(false);
   const [inLibrary, setInLibrary] = useState(false);
   const [mongoId, setMongoId] = useState(null);
+  const [episodesData, setEpisodesData] = useState([]);
+  const [mongoEpisodeIds, setMongoEpisodeIds] = useState([]);
 
   useEffect(() => {
     getShowInfo();
@@ -33,13 +35,9 @@ const ShowInfo = () => {
       return show.showId === showInfo.id;
     });
     setInLibrary(isInLibrary);
+    setMongoId(showLibrary.find(({ showId }) => showId === showInfo.id)?._id);
+    setMongoEpisodeIds(showLibrary.filter(show => show.showId == showInfo.id)[0]?.episodes.map(ep => ep._id))
   }, [showLibrary, showInfo]);
-
-  useEffect(() => {
-    if (inLibrary) {
-      setMongoId(showLibrary.find(({ showId }) => showId === showInfo.id)?._id);
-    }
-  }, [inLibrary]);
 
   const getShowInfo = async () => {
     setLoading(true);
@@ -50,8 +48,6 @@ const ShowInfo = () => {
       };
       const response = await axios.request(options);
       setShowInfo(response.data);
-      console.log('show info here')
-      console.log(response.data);
       const seasons = Object.groupBy(
         response.data._embedded.episodes,
         ({ season }) => season
@@ -59,13 +55,27 @@ const ShowInfo = () => {
       setShowSeasons(seasons);
       setShowEpisodes(!showEpisodes);
       setLoading(false);
+      const allEpisodes = response.data._embedded.episodes.map(ep => {
+        let epTime = ep.airtime;
+        if (ep.airtime == '' || ep.airtime == null) {
+          epTime = "00:00";
+      };
+        return {
+          episodeId: ep.id,
+          season: ep.season,
+          number: ep.number,
+          name: ep.name,
+          airTime: `${ep.airdate}T${epTime}`,
+          watched: false
+        };
+      });
+      setEpisodesData(allEpisodes);
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleShowLibrary = () => {
-    setInLibrary(!inLibrary);
     if (!inLibrary) {
       const showData = {
         showId: showInfo.id,
@@ -73,14 +83,15 @@ const ShowInfo = () => {
         image: showInfo?.image?.original,
         numOfEpisodes: showInfo._embedded.episodes.length
       };
-      api.addShow({ showData, userId: token.getId() }).then((res) => {
+      api.addShow({ showData,episodesData, userId: token.getId() }).then((res) => {
         dispatch(addLibrary(res.data.showLibrary));
       });
     } else {
-      api.deleteShow(mongoId, token.getId()).then((res) => {
+      api.deleteShow(mongoId, mongoEpisodeIds, token.getId()).then((res) => {
         dispatch(addLibrary(res.data.showLibrary));
       });
-    }
+    };
+    setInLibrary(!inLibrary);
   };
 
   return (
@@ -129,7 +140,6 @@ const ShowInfo = () => {
                     season={showSeasons[season]}
                     seasonNumber={season}
                     showInfo={showInfo}
-                    showMongoId={mongoId}
                   />
                 </div>
               );

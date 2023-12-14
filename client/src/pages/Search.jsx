@@ -21,7 +21,6 @@ function Search() {
         url: `https://api.tvmaze.com/search/shows?q=${searchShow}`,
       };
       const response = await axios.request(options);
-      console.log(response.data);
       setShows(response.data);
       setSearchShow("");
       setLoading(false);

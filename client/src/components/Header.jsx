@@ -17,12 +17,9 @@ const Header = () => {
 
   useEffect(() => {
     setUsername(token.getUsername());
-    console.log("location changed")
       api
         .getShowLibrary(token.getId())
         .then((res) => {
-          console.log('show library delivered');
-          console.log(res.data.showLibrary);
           dispatch(addLibrary(res.data.showLibrary));
         });
   }, [location]);

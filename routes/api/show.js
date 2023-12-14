@@ -7,7 +7,7 @@ router.route("/add")
 router.route("/:id")
     .get(showController.getAllShows);
 
-router.route("/:showId/:userId")
-    .delete(showController.deleteShow);
+router.route("/delete")
+    .post(showController.deleteShow);
 
 module.exports = router;

@@ -17,16 +17,24 @@ export default {
         return axios.post("/api/show/add", showData);
     },
 
-    deleteShow: (showId, userId) => {
-        return axios.delete(`/api/show/${showId}/${userId}`);
+    deleteShow: (showId, episodeIds, userId) => {
+        return axios.post(`/api/show/delete`, {showId, episodeIds, userId});
     },
 
-    addEpisode: (episodeData) => {
-        return axios.post("/api/episode/add", episodeData);
+    watchEpisode: (episodeData) => {
+        return axios.post("/api/episode/watch", episodeData);
     },
 
-    deleteEpisode: (episodeId, userId) => {
-        return axios.delete(`/api/episode/${episodeId}/${userId}`);
+    unwatchEpisode: (episodeData) => {
+        return axios.post(`/api/episode/unwatch`, episodeData);
+    },
+
+    watchSeason: (seasonData) => {
+        return axios.post("/api/episode/watchSeason", seasonData);
+    },
+
+    unwatchSeason: (seasonData) => {
+        return axios.post("/api/episode/unwatchSeason", seasonData);
     },
 
     getShowLibrary: (userId) => {

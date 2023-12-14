@@ -6,7 +6,7 @@ const ShowSchema = new Schema({
     name: String,
     image: String,
     numOfEpisodes: Number,
-    watchedEpisodes: [
+    episodes: [
         {
             type: Schema.Types.ObjectId,
             ref: "EpisodeData"

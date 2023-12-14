@@ -17,6 +17,7 @@ const Episode = ({ episode, showInfo, showMongoId }) => {
   const [episodeMongoId, setEpisodeMongoId] = useState(null);
   const [hasAired, setHasAired] = useState(false);
   const [image, setImage] = useState("");
+  const [episodeAirdate, setEpisodeAirdate] = useState(null);
 
   useEffect(() => {
     if (showLibrary) {
@@ -26,11 +27,16 @@ const Episode = ({ episode, showInfo, showMongoId }) => {
       setShowInLibrary(isInLibrary);
       setWatchedEpisodes(
         showLibrary.filter((show) => show.showId === showInfo.id)[0]
-          ?.watchedEpisodes
+          ?.episodes.filter(ep => ep.watched)
       );
+      let epAirTime = episode.airtime;
+      if (epAirTime == "" || epAirTime == null) {
+        epAirTime = '00:00'
+      };
       const epTime = episode.airdate + "T" + episode.airtime;
     const now = new Date().toISOString();
     setHasAired(now > epTime);
+    setEpisodeAirdate(epTime);
     };
     if (episode.image?.medium) {
       setImage(episode.image.medium)
@@ -45,43 +51,33 @@ const Episode = ({ episode, showInfo, showMongoId }) => {
         return showEpisode.episodeId === episode.id;
       });
       setWatched(isWatched);
-      if (isWatched) {
-        let mongoEpisode;
-        mongoEpisode = watchedEpisodes.filter((ep) => {
-          return ep.episodeId === episode.id;
-        });
-        setEpisodeMongoId(mongoEpisode[0]._id);
-      }
     } else {
       setWatched(false);
     }
   }, [watchedEpisodes]);
 
   useEffect(() => {
-    console.log(episode?.image?.medium)
-  }, []);
+    if (showInLibrary) {
+      let mongoEpisode = showLibrary.filter(show => show.showId === showInfo.id)[0].episodes.filter(ep => ep.episodeId === episode.id)[0]._id;
+      setEpisodeMongoId(mongoEpisode);
+    }
+  }, [showInLibrary]);
 
   const handleWatchEpisode = () => {
     setWatched(!watched);
     let newEpisodeList = [];
+    const episodeData = {
+      episodeId: episodeMongoId,
+      userId: token.getId()
+    };
     if (!watched) {
-      const episodeData = {
-        episodeId: episode.id,
-        season: episode.season,
-        number: episode.number,
-        name: episode.name,
-      };
       api
-        .addEpisode({
-          episodeData,
-          showId: showMongoId,
-          userId: token.getId(),
-        })
+        .watchEpisode(episodeData)
         .then((res) => {
           dispatch(addLibrary(res.data.showLibrary));
         });
     } else {
-      api.deleteEpisode(episodeMongoId, token.getId()).then((res) => {
+      api.unwatchEpisode(episodeData).then((res) => {
         dispatch(addLibrary(res.data.showLibrary));
       });
     }
@@ -104,7 +100,7 @@ const Episode = ({ episode, showInfo, showMongoId }) => {
         <Row>
           <Col xs={6} className="pe-0">
             <p style={{ fontSize: "14px" }} className="pt-2">
-              Air Date: {new Date(episode.airdate).toLocaleDateString()}
+              Air Date: {new Date(episodeAirdate).toLocaleDateString()}
             </p>
           </Col>
           <Col className="ps-0">
