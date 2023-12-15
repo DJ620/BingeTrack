@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import api from "../utils/api";
 import token from "../utils/token";
 import { addLibrary } from "../store/slices/showLibrary";
+import SeasonModal from "./SeasonModal";
 
 const Season = ({ season, seasonNumber, showInfo }) => {
   const dispatch = useDispatch();
@@ -16,8 +17,11 @@ const Season = ({ season, seasonNumber, showInfo }) => {
   const [totalEpisodes, setTotalEpisodes] = useState(0);
   const [numWatched, setNumWatched] = useState(0);
   const [mongoAiredEpIds, setMongoAiredEpIds] = useState([]);
+  const [mongoAiredEpIdsAndPrevious, setMongoAiredEpIdsAndPrevious] = useState([]);
   const [hasUnwatched, setHasUnwatched] = useState(false);
+  const [previousSeasonHasUnwatched, setPreviousSeasonHasUnwatched] = useState(false);
   const [showMongoId, setShowMongoId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     setShowMongoId(showLibrary.find(({ showId }) => showId === showInfo.id)?._id);
@@ -30,7 +34,14 @@ const Season = ({ season, seasonNumber, showInfo }) => {
 
   useEffect(() => {
     setHasUnwatched(numWatched < mongoAiredEpIds?.length);
+    const previous = showLibrary.filter(show => show.showId == showInfo.id)[0]?.episodes.filter(ep => ep.season < seasonNumber).map(ep => ep._id);
+    setMongoAiredEpIdsAndPrevious([...previous, ...mongoAiredEpIds]);
   }, [numWatched, mongoAiredEpIds]);
+
+  useEffect(() => {
+    const previousSeasonEps = showLibrary.filter(show => show.showId == showInfo.id)[0]?.episodes.filter(ep => ep.season < seasonNumber && !ep.watched);
+    setPreviousSeasonHasUnwatched(previousSeasonEps.length > 0);
+  }, [mongoAiredEpIdsAndPrevious]);
 
   const handleWatchSeason = () => {
     const seasonData = ({
@@ -52,14 +63,33 @@ const Season = ({ season, seasonNumber, showInfo }) => {
     };
   };
 
+  const openModal = () => {
+    if (hasUnwatched && seasonNumber > 1 && previousSeasonHasUnwatched) {
+      setShowModal(true);
+    } else {
+      handleWatchSeason();
+    };
+  };
+
+  const closeModal = () => setShowModal(false);
+
   const styles = {
     seasonBtn: {
-      display: showMongoId ? "block" : "none"
+      display: showMongoId && mongoAiredEpIds.length > 0 ? "block" : "none",
+      cursor: "pointer",
+      height: "40px"
     }
   };
 
   return (
     <div>
+      <SeasonModal 
+        showModal={showModal}
+        closeModal={closeModal}
+        episodeIds={mongoAiredEpIdsAndPrevious}
+        handleWatchSeason={handleWatchSeason}  
+      />
+      <div style={{display: 'flex'}}>
       <Button
         style={{width: '200px'}}
         className="mb-4 mt-4"
@@ -69,16 +99,15 @@ const Season = ({ season, seasonNumber, showInfo }) => {
         Season {seasonNumber} ({numWatched} / {totalEpisodes})
         {showEpisodes ? <FaCaretUp className="ms-3" /> : <FaCaretDown className="ms-3" />}
       </Button>
+      <img src={hasUnwatched ? "https://cdn.icon-icons.com/icons2/3257/PNG/512/checkbox_circle_icon_206111.png" : "https://cdn.icon-icons.com/icons2/2248/PNG/512/checkbox_marked_circle_icon_137772.png"} onClick={openModal} style={styles.seasonBtn} className="mt-4 ms-2" />
+      </div>
       {showEpisodes ? (
          <div>
-         <Button variant={hasUnwatched ? "outline-dark" : "dark"} size="sm" className="mb-3" onClick={() => handleWatchSeason()} style={styles.seasonBtn}>
-           {hasUnwatched ? "Mark whole season as watched" : "Mark whole season as unwatched"}
-         </Button>
         <Row xs={1} md={2} className="g-4">
           {season.map((episode) => {
             return (
               <Col key={episode.id}>
-                <Episode episode={episode} showInfo={showInfo} showMongoId={showMongoId}/>
+                <Episode episode={episode} showInfo={showInfo}/>
               </Col>
             );
           })}

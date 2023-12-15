@@ -7,8 +7,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { addLibrary } from "../store/slices/showLibrary";
 import api from "../utils/api";
 import token from "../utils/token";
+import EpisodeModal from "./EpisodeModal";
 
-const Episode = ({ episode, showInfo, showMongoId }) => {
+const Episode = ({ episode, showInfo }) => {
   const showLibrary = useSelector((state) => state.showLibrary);
   const dispatch = useDispatch();
   const [watched, setWatched] = useState(false);
@@ -18,6 +19,9 @@ const Episode = ({ episode, showInfo, showMongoId }) => {
   const [hasAired, setHasAired] = useState(false);
   const [image, setImage] = useState("");
   const [episodeAirdate, setEpisodeAirdate] = useState(null);
+  const [previousEpisodeIds, setPreviousEpisodeIds] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [previousUnseen, setPreviousUnseen] = useState(false);
 
   useEffect(() => {
     if (showLibrary) {
@@ -42,8 +46,16 @@ const Episode = ({ episode, showInfo, showMongoId }) => {
       setImage(episode.image.medium)
     } else {
       setImage('https://diwanegypt.com/wp-content/uploads/2020/12/Placeholder-1.png');
-    }
+    };
+    let previousSeason = showLibrary.filter(show => show.showId == showInfo.id)[0]?.episodes.filter(ep => ep.season < episode.season);
+    let previousEps = showLibrary.filter(show => show.showId == showInfo.id)[0]?.episodes.filter(ep => ep.season == episode.season && ep.number <= episode.number);
+    let allPrevious = [...previousEps, ...previousSeason];
+    setPreviousEpisodeIds(allPrevious.filter(ep => !ep.watched).map(ep => ep._id));
   }, [showLibrary]);
+
+  useEffect(() => {
+    setPreviousUnseen(previousEpisodeIds.length > 1);
+  }, [previousEpisodeIds]);
 
   useEffect(() => {
     if (watchedEpisodes && watchedEpisodes.length > 0) {
@@ -84,8 +96,19 @@ const Episode = ({ episode, showInfo, showMongoId }) => {
     setWatchedEpisodes(newEpisodeList);
   };
 
+  const openModal = () => {
+    if (!watched && previousUnseen) {
+      setShowModal(true);
+    } else {
+      handleWatchEpisode();
+    };
+  };
+
+  const closeModal = () => setShowModal(false);
+
   return (
     <Card className={watched ? "bg-dark-subtle" : ""}>
+      <EpisodeModal showModal={showModal} closeModal={closeModal} episodeIds={previousEpisodeIds} handleWatchEpisode={handleWatchEpisode}/>
       <Card.Header className="h6">
         Season {episode.season}, Episode {episode.number}
       </Card.Header>
@@ -108,7 +131,7 @@ const Episode = ({ episode, showInfo, showMongoId }) => {
               className={`mt-1 ${!hasAired ? 'disabled' : showInLibrary ? "" : "disabled"}`}
               variant={!hasAired ? 'dark' : watched ? "outline-secondary" : "dark"}
               size="sm"
-              onClick={() => handleWatchEpisode()}
+              onClick={() => openModal()}
             >
               {!hasAired ? "Upcoming" : watched ? "Mark as Unwatched" : "Mark as Watched"}
             </Button>
