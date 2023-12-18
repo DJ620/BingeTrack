@@ -13,4 +13,7 @@ router.route("/watchSeason")
 router.route("/unwatchSeason")
     .post(episodeController.unwatchSeason);
 
+router.route("/addNew")
+    .post(episodeController.addNewEpisodes);
+
 module.exports = router;

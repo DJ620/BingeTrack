@@ -35,12 +35,12 @@ const Season = ({ season, seasonNumber, showInfo }) => {
   useEffect(() => {
     setHasUnwatched(numWatched < mongoAiredEpIds?.length);
     const previous = showLibrary.filter(show => show.showId == showInfo.id)[0]?.episodes.filter(ep => ep.season < seasonNumber).map(ep => ep._id);
-    setMongoAiredEpIdsAndPrevious([...previous, ...mongoAiredEpIds]);
+    if (previous) setMongoAiredEpIdsAndPrevious([...previous, ...mongoAiredEpIds]);
   }, [numWatched, mongoAiredEpIds]);
 
   useEffect(() => {
     const previousSeasonEps = showLibrary.filter(show => show.showId == showInfo.id)[0]?.episodes.filter(ep => ep.season < seasonNumber && !ep.watched);
-    setPreviousSeasonHasUnwatched(previousSeasonEps.length > 0);
+    if (previousSeasonEps) setPreviousSeasonHasUnwatched(previousSeasonEps.length > 0);
   }, [mongoAiredEpIdsAndPrevious]);
 
   const handleWatchSeason = () => {

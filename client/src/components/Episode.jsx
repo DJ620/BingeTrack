@@ -30,27 +30,41 @@ const Episode = ({ episode, showInfo }) => {
       });
       setShowInLibrary(isInLibrary);
       setWatchedEpisodes(
-        showLibrary.filter((show) => show.showId === showInfo.id)[0]
-          ?.episodes.filter(ep => ep.watched)
+        showLibrary
+          .filter((show) => show.showId === showInfo.id)[0]
+          ?.episodes.filter((ep) => ep.watched)
       );
       let epAirTime = episode.airtime;
       if (epAirTime == "" || epAirTime == null) {
-        epAirTime = '00:00'
-      };
+        epAirTime = "00:00";
+      }
       const epTime = episode.airdate + "T" + episode.airtime;
-    const now = new Date().toISOString();
-    setHasAired(now > epTime);
-    setEpisodeAirdate(epTime);
-    };
+      const now = new Date().toISOString();
+      setHasAired(now > epTime);
+      setEpisodeAirdate(epTime);
+    }
     if (episode.image?.medium) {
-      setImage(episode.image.medium)
+      setImage(episode.image.medium);
     } else {
-      setImage('https://diwanegypt.com/wp-content/uploads/2020/12/Placeholder-1.png');
-    };
-    let previousSeason = showLibrary.filter(show => show.showId == showInfo.id)[0]?.episodes.filter(ep => ep.season < episode.season);
-    let previousEps = showLibrary.filter(show => show.showId == showInfo.id)[0]?.episodes.filter(ep => ep.season == episode.season && ep.number <= episode.number);
-    let allPrevious = [...previousEps, ...previousSeason];
-    setPreviousEpisodeIds(allPrevious.filter(ep => !ep.watched).map(ep => ep._id));
+      setImage(
+        "https://diwanegypt.com/wp-content/uploads/2020/12/Placeholder-1.png"
+      );
+    }
+    let previousSeason = showLibrary
+      .filter((show) => show.showId == showInfo.id)[0]
+      ?.episodes.filter((ep) => ep.season < episode.season);
+    let previousEps = showLibrary
+      .filter((show) => show.showId == showInfo.id)[0]
+      ?.episodes.filter(
+        (ep) => ep.season == episode.season && ep.number <= episode.number
+      );
+    let allPrevious;
+    if (previousEps) {
+      allPrevious = [...previousEps, ...previousSeason];
+      setPreviousEpisodeIds(
+        allPrevious.filter((ep) => !ep.watched).map((ep) => ep._id)
+      );
+    }
   }, [showLibrary]);
 
   useEffect(() => {
@@ -70,7 +84,9 @@ const Episode = ({ episode, showInfo }) => {
 
   useEffect(() => {
     if (showInLibrary) {
-      let mongoEpisode = showLibrary.filter(show => show.showId === showInfo.id)[0].episodes.filter(ep => ep.episodeId === episode.id)[0]._id;
+      let mongoEpisode = showLibrary
+        .filter((show) => show.showId === showInfo.id)[0]
+        .episodes.filter((ep) => ep.episodeId === episode.id)[0]?._id;
       setEpisodeMongoId(mongoEpisode);
     }
   }, [showInLibrary]);
@@ -80,14 +96,12 @@ const Episode = ({ episode, showInfo }) => {
     let newEpisodeList = [];
     const episodeData = {
       episodeId: episodeMongoId,
-      userId: token.getId()
+      userId: token.getId(),
     };
     if (!watched) {
-      api
-        .watchEpisode(episodeData)
-        .then((res) => {
-          dispatch(addLibrary(res.data.showLibrary));
-        });
+      api.watchEpisode(episodeData).then((res) => {
+        dispatch(addLibrary(res.data.showLibrary));
+      });
     } else {
       api.unwatchEpisode(episodeData).then((res) => {
         dispatch(addLibrary(res.data.showLibrary));
@@ -101,14 +115,19 @@ const Episode = ({ episode, showInfo }) => {
       setShowModal(true);
     } else {
       handleWatchEpisode();
-    };
+    }
   };
 
   const closeModal = () => setShowModal(false);
 
   return (
     <Card className={watched ? "bg-dark-subtle" : ""}>
-      <EpisodeModal showModal={showModal} closeModal={closeModal} episodeIds={previousEpisodeIds} handleWatchEpisode={handleWatchEpisode}/>
+      <EpisodeModal
+        showModal={showModal}
+        closeModal={closeModal}
+        episodeIds={previousEpisodeIds}
+        handleWatchEpisode={handleWatchEpisode}
+      />
       <Card.Header className="h6">
         Season {episode.season}, Episode {episode.number}
       </Card.Header>
@@ -128,12 +147,20 @@ const Episode = ({ episode, showInfo }) => {
           </Col>
           <Col className="ps-0">
             <Button
-              className={`mt-1 ${!hasAired ? 'disabled' : showInLibrary ? "" : "disabled"}`}
-              variant={!hasAired ? 'dark' : watched ? "outline-secondary" : "dark"}
+              className={`mt-1 ${
+                !hasAired ? "disabled" : showInLibrary ? "" : "disabled"
+              }`}
+              variant={
+                !hasAired ? "dark" : watched ? "outline-secondary" : "dark"
+              }
               size="sm"
               onClick={() => openModal()}
             >
-              {!hasAired ? "Upcoming" : watched ? "Mark as Unwatched" : "Mark as Watched"}
+              {!hasAired
+                ? "Upcoming"
+                : watched
+                ? "Mark as Unwatched"
+                : "Mark as Watched"}
             </Button>
           </Col>
         </Row>

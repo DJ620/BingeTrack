@@ -53,6 +53,30 @@ module.exports = {
       });
   },
 
+  addNewEpisodes: (req, res) => {
+    db.EpisodeData.insertMany(req.body.episodesData)
+      .then((eps) => {
+        const epIds = eps.map((ep) => ep._id);
+        db.ShowData.findOneAndUpdate(
+          { _id: req.body.showId },
+          { $push: { episodes: { $each: epIds } } }
+        ).then((epRes) => {
+          db.User.findOne({ _id: req.body.userId })
+            .populate({
+              path: "showLibrary",
+              populate: {
+                path: "episodes",
+              },
+            })
+            .then((dbUser) => {
+              res.json(dbUser);
+            })
+            .catch((err) => res.json(err));
+        });
+      })
+      .catch((err) => res.json(err));
+  },
+
   watchSeason: (req, res) => {
     db.EpisodeData.updateMany(
       { _id: { $in: req.body.episodeIds } },

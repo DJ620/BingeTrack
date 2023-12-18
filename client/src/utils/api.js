@@ -37,6 +37,10 @@ export default {
         return axios.post("/api/episode/unwatchSeason", seasonData);
     },
 
+    addNewEpisodes: (data) => {
+        return axios.post("/api/episode/addNew", data);
+    },
+
     getShowLibrary: (userId) => {
         return axios.get("/api/show/" + userId);
     }

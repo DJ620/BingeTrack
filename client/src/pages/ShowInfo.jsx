@@ -36,8 +36,39 @@ const ShowInfo = () => {
     });
     setInLibrary(isInLibrary);
     setMongoId(showLibrary.find(({ showId }) => showId === showInfo.id)?._id);
-    setMongoEpisodeIds(showLibrary.filter(show => show.showId == showInfo.id)[0]?.episodes.map(ep => ep._id))
+    setMongoEpisodeIds(
+      showLibrary
+        .filter((show) => show.showId == showInfo.id)[0]
+        ?.episodes.map((ep) => ep._id)
+    );
   }, [showLibrary, showInfo]);
+
+  useEffect(() => {
+    if (mongoId) {
+      const existing = showLibrary.filter(
+        (show) => show.showId == showInfo.id
+      )[0]?.episodes;
+      if (existing) {
+        const newEps = episodesData.filter(
+          (ep) =>
+            !existing.some(
+              (existingEp) => existingEp.episodeId === ep.episodeId
+            )
+        );
+        if (newEps.length > 0) {
+          api
+            .addNewEpisodes({
+              episodesData: newEps,
+              showId: mongoId,
+              userId: token.getId(),
+            })
+            .then((res) => {
+              dispatch(addLibrary(res.data.showLibrary));
+            });
+        }
+      }
+    }
+  }, [mongoId]);
 
   const getShowInfo = async () => {
     setLoading(true);
@@ -55,18 +86,18 @@ const ShowInfo = () => {
       setShowSeasons(seasons);
       setShowEpisodes(!showEpisodes);
       setLoading(false);
-      const allEpisodes = response.data._embedded.episodes.map(ep => {
+      const allEpisodes = response.data._embedded.episodes.map((ep) => {
         let epTime = ep.airtime;
-        if (ep.airtime == '' || ep.airtime == null) {
+        if (ep.airtime == "" || ep.airtime == null) {
           epTime = "00:00";
-      };
+        }
         return {
           episodeId: ep.id,
           season: ep.season,
           number: ep.number,
           name: ep.name,
           airTime: `${ep.airdate}T${epTime}`,
-          watched: false
+          watched: false,
         };
       });
       setEpisodesData(allEpisodes);
@@ -81,16 +112,18 @@ const ShowInfo = () => {
         showId: showInfo.id,
         name: showInfo.name,
         image: showInfo?.image?.original,
-        numOfEpisodes: showInfo._embedded.episodes.length
+        updated: showInfo.updated
       };
-      api.addShow({ showData,episodesData, userId: token.getId() }).then((res) => {
-        dispatch(addLibrary(res.data.showLibrary));
-      });
+      api
+        .addShow({ showData, episodesData, userId: token.getId() })
+        .then((res) => {
+          dispatch(addLibrary(res.data.showLibrary));
+        });
     } else {
       api.deleteShow(mongoId, mongoEpisodeIds, token.getId()).then((res) => {
         dispatch(addLibrary(res.data.showLibrary));
       });
-    };
+    }
     setInLibrary(!inLibrary);
   };
 
