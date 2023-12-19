@@ -93,10 +93,6 @@ const ShowInfo = () => {
       };
       const response = await axios.request(options);
       setShowInfo(response.data);
-      // const seasons = Object.groupBy(
-      //   response.data._embedded.episodes,
-      //   ({ season }) => season
-      // );
       const episodes = response.data._embedded.episodes;
       let groupedSeasons = {};
       episodes.forEach(ep => {
