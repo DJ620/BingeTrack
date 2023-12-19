@@ -10,7 +10,7 @@ export default {
     },
 
     verify: function(token) {
-        return axios.get("/api/user/" + token);
+        return axios.get("https://tv-tracker-4s31.onrender.com/api/user/" + token);
     },
 
     addShow: (showData) => {
