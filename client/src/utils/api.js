@@ -6,11 +6,11 @@ export default {
     },
 
     login: (userData) => {
-        return axios.post("https://tv-tracker-4s31.onrender.com/api/user/login", userData);
+        return axios.post("/api/user/login", userData);
     },
 
     verify: function(token) {
-        return axios.get("https://tv-tracker-4s31.onrender.com/api/user/" + token);
+        return axios.get("/api/user/" + token);
     },
 
     addShow: (showData) => {
