@@ -5,7 +5,8 @@ module.exports = function (app) {
     '/api',
     createProxyMiddleware({
       // 👇️ make sure to update your target
-      target: 'http://localhost:8000/',
+      // target: 'http://localhost:8000/',
+      target: "https://tv-tracker-4s31.onrender.com",
       changeOrigin: true,
     }),
   );
