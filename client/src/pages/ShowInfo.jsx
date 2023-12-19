@@ -34,13 +34,13 @@ const ShowInfo = () => {
     const isInLibrary = showLibrary.some((show) => {
       return show.showId === showInfo.id;
     });
-    setInLibrary(isInLibrary);
     setMongoId(showLibrary.find(({ showId }) => showId === showInfo.id)?._id);
     setMongoEpisodeIds(
       showLibrary
         .filter((show) => show.showId == showInfo.id)[0]
         ?.episodes.map((ep) => ep._id)
     );
+    setInLibrary(isInLibrary);
   }, [showLibrary, showInfo]);
 
   useEffect(() => {
@@ -69,6 +69,20 @@ const ShowInfo = () => {
       }
     }
   }, [mongoId]);
+
+  useEffect(() => {
+    if (inLibrary) {
+      api
+        .updateShow({
+          showId: mongoId,
+          updated: showInfo.updated,
+          userId: token.getId()
+        })
+        .then(res => {
+          dispatch(addLibrary(res.data.showLibrary));
+        });
+    };
+  }, [inLibrary]);
 
   const getShowInfo = async () => {
     setLoading(true);

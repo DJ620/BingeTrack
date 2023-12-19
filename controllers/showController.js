@@ -77,4 +77,30 @@ module.exports = {
         res.json(err);
       });
   },
+
+  updateShow: (req, res) => {
+    db.ShowData.findOneAndUpdate(
+      { _id: req.body.showId },
+      { updated: req.body.updated },
+      { returnOriginal: false }
+    )
+      .then((ep) => {
+        db.User.findOne({ _id: req.body.userId })
+          .populate({
+            path: "showLibrary",
+            populate: {
+              path: "episodes",
+            },
+          })
+          .then((dbUser) => {
+            res.json(dbUser);
+          })
+          .catch((err) => {
+            res.json(err);
+          });
+      })
+      .catch((err) => {
+        res.json(err);
+      });
+  },
 };

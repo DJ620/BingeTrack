@@ -70,6 +70,7 @@ const Library = () => {
         }
       });
       setNeedsUpdating(showUpdates);
+      console.log(showUpdates)
     } catch (error) {
       console.log(error);
     }

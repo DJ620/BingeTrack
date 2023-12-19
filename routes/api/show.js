@@ -10,4 +10,7 @@ router.route("/:id")
 router.route("/delete")
     .post(showController.deleteShow);
 
+router.route("/update")
+    .post(showController.updateShow);
+
 module.exports = router;

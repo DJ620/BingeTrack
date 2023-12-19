@@ -43,5 +43,9 @@ export default {
 
     getShowLibrary: (userId) => {
         return axios.get("/api/show/" + userId);
+    },
+
+    updateShow: (data) => {
+        return axios.post("/api/show/update", data);
     }
 }
