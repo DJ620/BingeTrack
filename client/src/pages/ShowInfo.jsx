@@ -93,11 +93,16 @@ const ShowInfo = () => {
       };
       const response = await axios.request(options);
       setShowInfo(response.data);
-      const seasons = Object.groupBy(
-        response.data._embedded.episodes,
-        ({ season }) => season
-      );
-      setShowSeasons(seasons);
+      // const seasons = Object.groupBy(
+      //   response.data._embedded.episodes,
+      //   ({ season }) => season
+      // );
+      const episodes = response.data._embedded.episodes;
+      let groupedSeasons = {};
+      episodes.forEach(ep => {
+        groupedSeasons[ep.season] ? groupedSeasons[ep.season].push(ep) : groupedSeasons[ep.season] = [ep];
+      });
+      setShowSeasons(groupedSeasons);
       setShowEpisodes(!showEpisodes);
       setLoading(false);
       const allEpisodes = response.data._embedded.episodes.map((ep) => {
