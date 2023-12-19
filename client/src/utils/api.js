@@ -6,7 +6,7 @@ export default {
     },
 
     login: (userData) => {
-        return axios.post("/api/user/login", userData);
+        return axios.post("https://tv-tracker-4s31.onrender.com/api/user/login", userData);
     },
 
     verify: function(token) {
