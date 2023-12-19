@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require("express-session");
 const passport = require("./config/Passport");
+const cors = require("cors");
 require("dotenv").config();
 
 const mongoose = require("mongoose");
@@ -10,6 +11,8 @@ const PORT = process.env.PORT || 8000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(cors());
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/dist"));
