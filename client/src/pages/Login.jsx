@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Spinner } from "react-bootstrap";
 import api from "../utils/api";
+import token from "../utils/token";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -9,6 +10,18 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    handleVerify();
+  }, []);
+
+  const handleVerify = async() => {
+    await api.verify(token.getToken()).then(res => {
+      if (res.data.success) {
+        navigate("/library");
+      };
+    });
+  };
 
   const signIn = (e) => {
     e.preventDefault();
