@@ -34,28 +34,34 @@ function Search() {
       <>
         <p>Search for a TV show:</p>
         <form onSubmit={handleSearch}>
-        <span>
-          <input
-            type="text"
-            id="searchTerm"
-            name="searchTerm"
-            value={searchShow}
-            onChange={(e) => setSearchShow(e.target.value)}
-          />
-          <Button
-            variant="primary"
-            className="mb-1"
-            style={{ marginLeft: "10px" }}
-            type="submit"
-          >
-            Search
-          </Button>
-          {searchName ? <p className='text-secondary'>Results for "{searchName}"</p> : ''}
+          <span>
+            <input
+              type="text"
+              id="searchTerm"
+              name="searchTerm"
+              value={searchShow}
+              onChange={(e) => setSearchShow(e.target.value)}
+            />
+            <Button
+              variant="primary"
+              className="mb-1"
+              style={{ marginLeft: "10px" }}
+              type="submit"
+            >
+              Search
+            </Button>
+            {searchName ? (
+              <p className="text-secondary">Results for "{searchName}"</p>
+            ) : (
+              ""
+            )}
           </span>
         </form>
       </>
       {loading ? (
-        <Spinner animation="border" role="status" />
+        <div className="text-center">
+          <Spinner animation="border" role="status" />
+        </div>
       ) : (
         <div>
           {shows.map((tvShow, index) => {

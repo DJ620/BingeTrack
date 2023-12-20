@@ -76,12 +76,12 @@ const ShowInfo = () => {
         .updateShow({
           showId: mongoId,
           updated: showInfo.updated,
-          userId: token.getId()
+          userId: token.getId(),
         })
-        .then(res => {
+        .then((res) => {
           dispatch(addLibrary(res.data.showLibrary));
         });
-    };
+    }
   }, [inLibrary]);
 
   const getShowInfo = async () => {
@@ -95,8 +95,10 @@ const ShowInfo = () => {
       setShowInfo(response.data);
       const episodes = response.data._embedded.episodes;
       let groupedSeasons = {};
-      episodes.forEach(ep => {
-        groupedSeasons[ep.season] ? groupedSeasons[ep.season].push(ep) : groupedSeasons[ep.season] = [ep];
+      episodes.forEach((ep) => {
+        groupedSeasons[ep.season]
+          ? groupedSeasons[ep.season].push(ep)
+          : (groupedSeasons[ep.season] = [ep]);
       });
       setShowSeasons(groupedSeasons);
       setShowEpisodes(!showEpisodes);
@@ -127,7 +129,7 @@ const ShowInfo = () => {
         showId: showInfo.id,
         name: showInfo.name,
         image: showInfo?.image?.original,
-        updated: showInfo.updated
+        updated: showInfo.updated,
       };
       api
         .addShow({ showData, episodesData, userId: token.getId() })
@@ -145,14 +147,19 @@ const ShowInfo = () => {
   return (
     <Container>
       {loading ? (
-        <Spinner animation="border" role="status" />
+        <div className="text-center">
+          <Spinner animation="border" role="status" />
+        </div>
       ) : (
         <>
           <Row className="text-center text-sm-start">
             <Col>
               <h1>{showInfo.name}</h1>
             </Col>
-            <Col xs={{order: 'first', span: 12}} sm={{order: 'last', span: 6}}>
+            <Col
+              xs={{ order: "first", span: 12 }}
+              sm={{ order: "last", span: 6 }}
+            >
               <Button
                 className="float-sm-end mt-2 mb-sm-0 mb-4"
                 variant={inLibrary ? "danger" : "success"}
