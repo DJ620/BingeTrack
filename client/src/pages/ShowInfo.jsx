@@ -148,13 +148,13 @@ const ShowInfo = () => {
         <Spinner animation="border" role="status" />
       ) : (
         <>
-          <Row>
+          <Row className="text-center text-sm-start">
             <Col>
               <h1>{showInfo.name}</h1>
             </Col>
-            <Col>
+            <Col xs={{order: 'first', span: 12}} sm={{order: 'last', span: 6}}>
               <Button
-                className="float-end mt-2"
+                className="float-sm-end mt-2 mb-sm-0 mb-4"
                 variant={inLibrary ? "danger" : "success"}
                 onClick={() => handleShowLibrary()}
               >
@@ -162,7 +162,7 @@ const ShowInfo = () => {
               </Button>
             </Col>
           </Row>
-          <Row>
+          <Row className="text-center text-sm-start">
             <Col xl={4} xs={12} lg={5}>
               <img
                 src={showInfo?.image?.original}

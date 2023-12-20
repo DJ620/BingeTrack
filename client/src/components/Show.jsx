@@ -11,7 +11,7 @@ const Show = ({ tvShow }) => {
     <Card.Header className="h3">{tvShow.show.name}</Card.Header>
     <span>
     <img src={tvShow.show.image?.medium} onClick={() => navigate(`/show/${tvShow.show.id}`)} style={{cursor: 'pointer'}} className="my-4"/>
-            <Card.Text>
+            <Card.Text className="px-3">
           <p dangerouslySetInnerHTML={{__html: tvShow.show.summary}} />
           </Card.Text>
     </span>

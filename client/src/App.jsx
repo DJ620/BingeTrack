@@ -13,7 +13,7 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
-      <div style={{paddingBottom: '70px'}}>
+      <div style={{paddingBottom: '70px', paddingTop: '70px'}}>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />

@@ -7,8 +7,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        // target: 'http://localhost:8000'
-        target: "https://tv-tracker-4s31.onrender.com"
+        target: 'http://localhost:8000'
+        // target: "https://tv-tracker-4s31.onrender.com"
       }
     }
   }
