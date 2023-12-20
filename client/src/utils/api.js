@@ -10,7 +10,6 @@ export default {
     },
 
     verify: function(token) {
-        console.log('getting here')
         return axios.get("/api/user/" + token);
     },
 
