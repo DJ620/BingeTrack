@@ -16,10 +16,8 @@ const Register = () => {
     setError(null);
     setLoading(true);
     api.createUser({ email, username, password }).then((res) => {
-      console.log(res.data);
       if (res.data.success) {
         api.login({ username, password }).then((res) => {
-          console.log(res);
           if (res.data.success) {
             localStorage.setItem("token", JSON.stringify(res.data.token));
             navigate("/library");

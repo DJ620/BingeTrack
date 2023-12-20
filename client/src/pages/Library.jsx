@@ -8,6 +8,7 @@ import axios from "axios";
 import api from "../utils/api";
 import token from "../utils/token";
 import { addLibrary } from "../store/slices/showLibrary";
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 
 const Library = () => {
   const navigate = useNavigate();
@@ -17,6 +18,9 @@ const Library = () => {
   const [hasNewEpisodes, setHasNewEpisodes] = useState([]);
   const [notStarted, setNotStarted] = useState([]);
   const [needsUpdating, setNeedsUpdating] = useState([]);
+  const [showWatchNext, setShowWatchNext] = useState(true);
+  const [showNotStarted, setShowNotStarted] = useState(true);
+  const [showUpToDate, setShowUpToDate] = useState(true);
 
   useEffect(() => {
     setUpToDate(
@@ -70,7 +74,6 @@ const Library = () => {
         }
       });
       setNeedsUpdating(showUpdates);
-      console.log(showUpdates)
     } catch (error) {
       console.log(error);
     }
@@ -125,9 +128,9 @@ const Library = () => {
         <p>You don't currently have any shows in your library</p>
       ) : null}
       {hasNewEpisodes.length > 0 ? (
-        <h4 className="text-center mt-4">Watch Next</h4>
+        <h4 className="text-center mt-4">Watch Next ({hasNewEpisodes.length}) {showWatchNext ? <FaCaretUp className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowWatchNext(false)}/> :<FaCaretDown className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowWatchNext(true)}/>}</h4>
       ) : null}
-      {hasNewEpisodes.length > 0 ? (
+      {hasNewEpisodes.length > 0 && showWatchNext ? (
         <Row className="justify-content-center bg-body-secondary pt-3">
           {hasNewEpisodes.map((show) => {
             return (
@@ -147,9 +150,9 @@ const Library = () => {
         </Row>
       ) : null}
       {notStarted.length > 0 ? (
-        <h4 className="text-center mt-4">Haven't Started Watching</h4>
+        <h4 className="text-center mt-4">Haven't Started Watching ({notStarted.length}) {showNotStarted ? <FaCaretUp className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowNotStarted(false)}/> :<FaCaretDown className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowNotStarted(true)}/>}</h4>
       ) : null}
-      {notStarted.length > 0 ? (
+      {notStarted.length > 0 && showNotStarted ? (
         <Row className="justify-content-center bg-body-secondary pt-3">
           {notStarted.map((show) => {
             return (
@@ -169,9 +172,9 @@ const Library = () => {
         </Row>
       ) : null}
       {upToDate.length > 0 ? (
-        <h4 className="text-center mt-4">Up To Date</h4>
+        <h4 className="text-center mt-4">Up To Date ({upToDate.length}) {showUpToDate ? <FaCaretUp className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowUpToDate(false)}/> :<FaCaretDown className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowUpToDate(true)}/>}</h4>
       ) : null}
-      {upToDate.length > 0 ? (
+      {upToDate.length > 0 && showUpToDate ? (
         <Row className="justify-content-center bg-body-secondary pt-3">
           {upToDate.map((show) => {
             return (

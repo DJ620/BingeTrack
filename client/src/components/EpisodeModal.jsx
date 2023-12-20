@@ -18,7 +18,6 @@ const EpisodeModal = ({ showModal, closeModal, episodeIds, handleWatchEpisode })
                 episodeIds,
                 userId: token.getId()
             }).then(res => {
-                console.log(res);
                 dispatch(addLibrary(res.data.showLibrary));
                 closeModal();
             })

@@ -28,7 +28,6 @@ const Login = () => {
     setError(null);
     setLoading(true);
     api.login({ username, password }).then((res) => {
-      console.log(res);
       if (res.data.success) {
         localStorage.setItem("token", JSON.stringify(res.data.token));
         navigate("/library");

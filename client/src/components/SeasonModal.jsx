@@ -18,7 +18,6 @@ const SeasonModal = ({ showModal, closeModal, episodeIds, handleWatchSeason }) =
                 episodeIds,
                 userId: token.getId()
             }).then(res => {
-                console.log(res);
                 dispatch(addLibrary(res.data.showLibrary));
                 closeModal();
             })
