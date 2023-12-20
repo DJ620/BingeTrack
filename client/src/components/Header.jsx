@@ -30,7 +30,7 @@ const Header = () => {
   }
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary" fixed="top" collapseOnSelect>
+    <Navbar expand="sm" className="bg-body-tertiary" fixed="top" collapseOnSelect>
       <Container>
         <LinkContainer to="/library">
           <Navbar.Brand>TV Tracker</Navbar.Brand>
