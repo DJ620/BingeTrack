@@ -22,7 +22,7 @@
     "concurrently": "^5.3.0"
   },
   "scripts": {
-    "install-server": "npm install --force && cd client && npm run build",
+    "install-server": "npm install --force",
     "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
     "start:prod": "node server.js",
     "start:dev": "concurrently \"nodemon server.js\" \"npm run client\"",
