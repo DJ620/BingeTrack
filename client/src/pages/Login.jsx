@@ -19,6 +19,8 @@ const Login = () => {
     await api.verify(token.getToken()).then(res => {
       if (res.data.success) {
         navigate("/library");
+      } else {
+        localStorage.removeItem("token");
       };
     });
   };
