@@ -10,10 +10,17 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [demo, setDemo] = useState(false);
 
   useEffect(() => {
     handleVerify();
   }, []);
+
+  useEffect(() => {
+    if (demo) {
+      signIn();
+    };
+  }, [demo]);
 
   const handleVerify = async() => {
     await api.verify(token.getToken()).then(res => {
@@ -25,8 +32,14 @@ const Login = () => {
     });
   };
 
+  const useDemo = async () => {
+    setUsername("demo");
+    setPassword("demo123");
+    setDemo(true);
+  };
+
   const signIn = (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     setError(null);
     setLoading(true);
     api.login({ username, password }).then((res) => {
@@ -87,6 +100,11 @@ const Login = () => {
           {error}
         </p>
       ) : null}
+       <div className="row d-flex justify-content-center mt-4">
+          <button className="btn btn-link" style={{width:"200px", fontSize:"14px"}} onClick={useDemo}>
+            Use demo account
+          </button>
+        </div>
     </div>
   );
 };
