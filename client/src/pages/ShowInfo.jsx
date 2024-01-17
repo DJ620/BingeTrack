@@ -141,7 +141,6 @@ const ShowInfo = () => {
         dispatch(addLibrary(res.data.showLibrary));
       });
     }
-    setInLibrary(!inLibrary);
   };
 
   return (
