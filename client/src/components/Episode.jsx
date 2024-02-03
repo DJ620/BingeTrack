@@ -142,7 +142,7 @@ const Episode = ({ episode, showInfo }) => {
         <Row>
           <Col xs={6} className="pe-0">
             <p style={{ fontSize: "14px" }} className="pt-2">
-              Air Date: {new Date(episodeAirdate).toLocaleDateString()}
+              Air Date: {new Date(episode.airdate).toLocaleDateString()}
             </p>
           </Col>
           <Col className="ps-0">
