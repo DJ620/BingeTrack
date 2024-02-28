@@ -146,26 +146,11 @@ const Library = () => {
           )}
         </h4>
       ) : null}
-      {hasNewEpisodes.length > 0 && showWatchNext ? (
-        <Row className="justify-content-center bg-body-secondary py-3">
-          {hasNewEpisodes.map((show) => {
-            return (
-              // <Col
-              //   key={show.showId}
-              //   className="col-lg-3 col-12 col-sm-6 col-md-4 my-2 text-center"
-              // >
-              //   <img
-              //     src={show.image}
-              //     style={{ maxHeight: "200px", cursor: "pointer" }}
-              //     onClick={() => navigate(`/show/${show.showId}`)}
-              //   />
-              //   {/* <h4>{show.name}</h4> */}
-              // </Col>
-              <LibrarySection show={show} key={show.showId} />
-            );
-          })}
-        </Row>
-      ) : null}
+      <LibrarySection
+        allShows={hasNewEpisodes}
+        show={showWatchNext}
+        setShow={setShowWatchNext}
+      />
       {notStarted.length > 0 ? (
         <h4 className="text-center mt-4">
           Haven't Started Watching ({notStarted.length}){" "}
@@ -184,26 +169,11 @@ const Library = () => {
           )}
         </h4>
       ) : null}
-      {notStarted.length > 0 && showNotStarted ? (
-        <Row className="justify-content-center bg-body-secondary pt-3">
-          {notStarted.map((show) => {
-            return (
-              // <Col
-              //   key={show.showId}
-              //   className="col-lg-3 col-12 col-sm-6 col-md-4 mt-2 text-center"
-              // >
-              //   <img
-              //     src={show.image}
-              //     style={{ maxHeight: "200px", cursor: "pointer" }}
-              //     onClick={() => navigate(`/show/${show.showId}`)}
-              //   />
-              //   <h4>{show.name}</h4>
-              // </Col>
-              <LibrarySection show={show} key={show.showId} />
-            );
-          })}
-        </Row>
-      ) : null}
+      <LibrarySection
+        allShows={notStarted}
+        show={showNotStarted}
+        setShow={setShowNotStarted}
+      />
       {upToDate.length > 0 ? (
         <h4 className="text-center mt-4">
           Up To Date ({upToDate.length}){" "}
@@ -222,26 +192,11 @@ const Library = () => {
           )}
         </h4>
       ) : null}
-      {upToDate.length > 0 && showUpToDate ? (
-        <Row className="justify-content-center bg-body-secondary pt-3">
-          {upToDate.map((show) => {
-            return (
-              // <Col
-              //   key={show.showId}
-              //   className="col-lg-3 col-12 col-sm-6 col-md-4 mt-2 text-center"
-              // >
-              //   <img
-              //     src={show.image}
-              //     style={{ maxHeight: "200px", cursor: "pointer" }}
-              //     onClick={() => navigate(`/show/${show.showId}`)}
-              //   />
-              //   <h4>{show.name}</h4>
-              // </Col>
-              <LibrarySection show={show} key={show.showId} />
-            );
-          })}
-        </Row>
-      ) : null}
+      <LibrarySection
+        allShows={upToDate}
+        show={showUpToDate}
+        setShow={setShowUpToDate}
+      />
     </Container>
   );
 };
