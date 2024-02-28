@@ -9,6 +9,7 @@ import api from "../utils/api";
 import token from "../utils/token";
 import { addLibrary } from "../store/slices/showLibrary";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import LibrarySection from "../components/LibrarySection";
 
 const Library = () => {
   const navigate = useNavigate();
@@ -98,7 +99,7 @@ const Library = () => {
           number: ep.number,
           name: ep.name,
           airTime: `${ep.airdate}T${epTime}`,
-          watched: false
+          watched: false,
         };
       });
       const newEps = episodesData.filter(
@@ -110,9 +111,9 @@ const Library = () => {
           .addNewEpisodes({
             episodesData: newEps,
             showId: show._id,
-            userId: token.getId()
+            userId: token.getId(),
           })
-          .then(res => {
+          .then((res) => {
             dispatch(addLibrary(res.data.showLibrary));
           });
       }
@@ -128,67 +129,115 @@ const Library = () => {
         <p>You don't currently have any shows in your library</p>
       ) : null}
       {hasNewEpisodes.length > 0 ? (
-        <h4 className="text-center mt-4">Watch Next ({hasNewEpisodes.length}) {showWatchNext ? <FaCaretUp className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowWatchNext(false)}/> :<FaCaretDown className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowWatchNext(true)}/>}</h4>
+        <h4 className="text-center mt-4">
+          Watch Next ({hasNewEpisodes.length}){" "}
+          {showWatchNext ? (
+            <FaCaretUp
+              className="ms-3"
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowWatchNext(false)}
+            />
+          ) : (
+            <FaCaretDown
+              className="ms-3"
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowWatchNext(true)}
+            />
+          )}
+        </h4>
       ) : null}
       {hasNewEpisodes.length > 0 && showWatchNext ? (
-        <Row className="justify-content-center bg-body-secondary pt-3">
+        <Row className="justify-content-center bg-body-secondary py-3">
           {hasNewEpisodes.map((show) => {
             return (
-              <Col
-                key={show.showId}
-                className="col-lg-3 col-12 col-sm-6 col-md-4 mt-2 text-center"
-              >
-                <img
-                  src={show.image}
-                  style={{ maxHeight: "200px", cursor: "pointer" }}
-                  onClick={() => navigate(`/show/${show.showId}`)}
-                />
-                <h4>{show.name}</h4>
-              </Col>
+              // <Col
+              //   key={show.showId}
+              //   className="col-lg-3 col-12 col-sm-6 col-md-4 my-2 text-center"
+              // >
+              //   <img
+              //     src={show.image}
+              //     style={{ maxHeight: "200px", cursor: "pointer" }}
+              //     onClick={() => navigate(`/show/${show.showId}`)}
+              //   />
+              //   {/* <h4>{show.name}</h4> */}
+              // </Col>
+              <LibrarySection show={show} key={show.showId} />
             );
           })}
         </Row>
       ) : null}
       {notStarted.length > 0 ? (
-        <h4 className="text-center mt-4">Haven't Started Watching ({notStarted.length}) {showNotStarted ? <FaCaretUp className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowNotStarted(false)}/> :<FaCaretDown className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowNotStarted(true)}/>}</h4>
+        <h4 className="text-center mt-4">
+          Haven't Started Watching ({notStarted.length}){" "}
+          {showNotStarted ? (
+            <FaCaretUp
+              className="ms-3"
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowNotStarted(false)}
+            />
+          ) : (
+            <FaCaretDown
+              className="ms-3"
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowNotStarted(true)}
+            />
+          )}
+        </h4>
       ) : null}
       {notStarted.length > 0 && showNotStarted ? (
         <Row className="justify-content-center bg-body-secondary pt-3">
           {notStarted.map((show) => {
             return (
-              <Col
-                key={show.showId}
-                className="col-lg-3 col-12 col-sm-6 col-md-4 mt-2 text-center"
-              >
-                <img
-                  src={show.image}
-                  style={{ maxHeight: "200px", cursor: "pointer" }}
-                  onClick={() => navigate(`/show/${show.showId}`)}
-                />
-                <h4>{show.name}</h4>
-              </Col>
+              // <Col
+              //   key={show.showId}
+              //   className="col-lg-3 col-12 col-sm-6 col-md-4 mt-2 text-center"
+              // >
+              //   <img
+              //     src={show.image}
+              //     style={{ maxHeight: "200px", cursor: "pointer" }}
+              //     onClick={() => navigate(`/show/${show.showId}`)}
+              //   />
+              //   <h4>{show.name}</h4>
+              // </Col>
+              <LibrarySection show={show} key={show.showId} />
             );
           })}
         </Row>
       ) : null}
       {upToDate.length > 0 ? (
-        <h4 className="text-center mt-4">Up To Date ({upToDate.length}) {showUpToDate ? <FaCaretUp className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowUpToDate(false)}/> :<FaCaretDown className="ms-3" style={{cursor: 'pointer'}} onClick={() => setShowUpToDate(true)}/>}</h4>
+        <h4 className="text-center mt-4">
+          Up To Date ({upToDate.length}){" "}
+          {showUpToDate ? (
+            <FaCaretUp
+              className="ms-3"
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowUpToDate(false)}
+            />
+          ) : (
+            <FaCaretDown
+              className="ms-3"
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowUpToDate(true)}
+            />
+          )}
+        </h4>
       ) : null}
       {upToDate.length > 0 && showUpToDate ? (
         <Row className="justify-content-center bg-body-secondary pt-3">
           {upToDate.map((show) => {
             return (
-              <Col
-                key={show.showId}
-                className="col-lg-3 col-12 col-sm-6 col-md-4 mt-2 text-center"
-              >
-                <img
-                  src={show.image}
-                  style={{ maxHeight: "200px", cursor: "pointer" }}
-                  onClick={() => navigate(`/show/${show.showId}`)}
-                />
-                <h4>{show.name}</h4>
-              </Col>
+              // <Col
+              //   key={show.showId}
+              //   className="col-lg-3 col-12 col-sm-6 col-md-4 mt-2 text-center"
+              // >
+              //   <img
+              //     src={show.image}
+              //     style={{ maxHeight: "200px", cursor: "pointer" }}
+              //     onClick={() => navigate(`/show/${show.showId}`)}
+              //   />
+              //   <h4>{show.name}</h4>
+              // </Col>
+              <LibrarySection show={show} key={show.showId} />
             );
           })}
         </Row>
