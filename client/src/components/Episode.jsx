@@ -8,6 +8,7 @@ import { addLibrary } from "../store/slices/showLibrary";
 import api from "../utils/api";
 import token from "../utils/token";
 import EpisodeModal from "./EpisodeModal";
+import placeholder from '../assets/colorcard.jpeg';
 
 const Episode = ({ episode, showInfo }) => {
   const showLibrary = useSelector((state) => state.showLibrary);
@@ -24,6 +25,7 @@ const Episode = ({ episode, showInfo }) => {
   const [previousUnseen, setPreviousUnseen] = useState(false);
 
   useEffect(() => {
+    console.log("info", episode);
     if (showLibrary) {
       const isInLibrary = showLibrary.some((show) => {
         return show.showId === showInfo.id;
@@ -47,7 +49,7 @@ const Episode = ({ episode, showInfo }) => {
       setImage(episode.image.original);
     } else {
       setImage(
-        "https://diwanegypt.com/wp-content/uploads/2020/12/Placeholder-1.png"
+        placeholder
       );
     }
     let previousSeason = showLibrary
@@ -132,7 +134,7 @@ const Episode = ({ episode, showInfo }) => {
         Season {episode.season}, Episode {episode.number}
       </Card.Header>
       <Suspense fallback={<p>Loading...</p>}>
-        <Card.Img variant="top" src={image} />
+        <Card.Img variant="top" src={image} style={{backgroundColor:"#dfdfdf"}} />
       </Suspense>
       <Card.Body>
         <Card.Title className="h4">{episode.name}</Card.Title>
@@ -144,7 +146,7 @@ const Episode = ({ episode, showInfo }) => {
         <Row>
           <Col xs={6} className="pe-0">
             <p style={{ fontSize: "14px" }} className="pt-2">
-              Air Date: {new Date(episode.airdate).toLocaleDateString()}
+              Air Date: {new Date(episode.airdate).toLocaleDateString('en-US', {timeZone: 'UTC'})}
             </p>
           </Col>
           <Col className="ps-0">

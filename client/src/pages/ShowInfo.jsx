@@ -89,7 +89,7 @@ const ShowInfo = () => {
     try {
       const options = {
         method: "GET",
-        url: `https://api.tvmaze.com/shows/${showId}?embed=episodes`,
+        url: `https://api.tvmaze.com/shows/${showId}?embed[]=episodes`,
       };
       const response = await axios.request(options);
       setShowInfo(response.data);

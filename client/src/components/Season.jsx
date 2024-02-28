@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import Episode from "./Episode";
+import { useState, useEffect, lazy, Suspense } from "react";
+// import Episode from "./Episode";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -11,6 +11,7 @@ import { addLibrary } from "../store/slices/showLibrary";
 import SeasonModal from "./SeasonModal";
 
 const Season = ({ season, seasonNumber, showInfo }) => {
+  const Episode = lazy(() => import('./Episode'));
   const dispatch = useDispatch();
   const showLibrary = useSelector(state => state.showLibrary);
   const [showEpisodes, setShowEpisodes] = useState(false);
@@ -107,7 +108,9 @@ const Season = ({ season, seasonNumber, showInfo }) => {
           {season.map((episode) => {
             return (
               <Col key={episode.id}>
+                <Suspense fallback={<p>Loading...</p>}>
                 <Episode episode={episode} showInfo={showInfo}/>
+                </Suspense>
               </Col>
             );
           })}
