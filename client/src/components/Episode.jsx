@@ -43,8 +43,8 @@ const Episode = ({ episode, showInfo }) => {
       setHasAired(now > epTime);
       setEpisodeAirdate(epTime);
     }
-    if (episode.image?.medium) {
-      setImage(episode.image.medium);
+    if (episode.image?.original) {
+      setImage(episode.image.original);
     } else {
       setImage(
         "https://diwanegypt.com/wp-content/uploads/2020/12/Placeholder-1.png"
