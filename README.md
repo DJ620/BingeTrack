@@ -1,8 +1,8 @@
-# TV Tracker
+# BingeTrack
 
 ## Description
 
-TV Tracker is a mobile-responsive React web application designed for users to keep track of the TV shows they watch. Leveraging the TV Maze API, the app gathers information on user-selected shows, allowing users to monitor watched and unwatched episodes. The application automatically notifies users of new episodes, checks if they are up-to-date, and identifies shows that the user has not yet started watching.
+BingeTrack is a mobile-responsive React web application designed for users to keep track of the TV shows they watch. Leveraging the TV Maze API, the app gathers information on user-selected shows, allowing users to monitor watched and unwatched episodes. The application automatically notifies users of new episodes, checks if they are up-to-date, and identifies shows that the user has not yet started watching.
 
 ## Technologies Used
 
@@ -40,7 +40,7 @@ To run the app locally on your machine, follow these steps:
 
 ## Usage
 
-TV Tracker is a web application used to track the TV shows you are watching or want to watch. It allows users to add shows to their 'library' and monitor watched episodes. The library section categorizes shows into not started, in progress, and available episodes marked unwatched.
+BingeTrack is a web application used to track the TV shows you are watching or want to watch. It allows users to add shows to their 'library' and monitor watched episodes. The library section categorizes shows into not started, in progress, and available episodes marked unwatched.
 
 ## Features
 
@@ -55,7 +55,7 @@ All required dependencies are listed in the `package.json` file. Install them us
 
 ## Contribution Guidelines
 
-Contributions to TV Tracker are welcome! If you'd like to contribute, please follow these guidelines:
+Contributions to BingeTrack are welcome! If you'd like to contribute, please follow these guidelines:
 
 1. Fork the repository.
 2. Create a new branch for your feature or bug fix.

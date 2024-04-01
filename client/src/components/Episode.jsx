@@ -133,9 +133,11 @@ const Episode = ({ episode, showInfo }) => {
       <Card.Header className="h6">
         Season {episode.season}, Episode {episode.number}
       </Card.Header>
+      <div style={{maxHeight: "230px", overflow:"hidden"}}>
       <Suspense fallback={<p>Loading...</p>}>
-        <Card.Img variant="top" src={image} style={{backgroundColor:"#dfdfdf"}} />
+        <Card.Img variant="top" src={image}/>
       </Suspense>
+      </div>
       <Card.Body>
         <Card.Title className="h4">{episode.name}</Card.Title>
         <Card.Text style={{ height: "100px", overflow: "scroll" }}>

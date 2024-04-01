@@ -33,7 +33,7 @@ const Header = () => {
     <Navbar expand="sm" className="bg-body-tertiary" fixed="top" collapseOnSelect>
       <Container>
         <LinkContainer to="/library">
-          <Navbar.Brand>TV Tracker</Navbar.Brand>
+          <Navbar.Brand>BingeTrack</Navbar.Brand>
         </LinkContainer>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" className={username ? '' : 'justify-content-end'}>
