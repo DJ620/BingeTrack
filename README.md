@@ -11,6 +11,7 @@ BingeTrack is a mobile-responsive React web application designed for users to ke
 - Express
 - MongoDB
 - Mongoose
+- Node
 - Axios
 - Passport
 - JSONwebtoken
