@@ -1,5 +1,5 @@
 {
-  "name": "tv-tracker",
+  "name": "BingeTrack",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -32,13 +32,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DJ620/mernstacktemplate.git"
+    "url": "git+https://github.com/DJ620/BingeTrack.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/DJ620/mernstacktemplate/issues"
+    "url": "https://github.com/DJ620/BingeTrack/issues"
   },
-  "homepage": "https://github.com/DJ620/mernstacktemplate#readme"
+  "homepage": "https://github.com/DJ620/BingeTrack#readme"
 }
